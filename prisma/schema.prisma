@@ -10,11 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-model Meals {
-
-  id               Int          @id @default(autoincrement())
-  title            String       @db.VarChar(255)
-  description      String?      
-
+model Planet {
+  id            Int       @id @default(autoincrement())
+  name          String    @db.VarChar(255)
+  description   String?
+  diameter      Int
+  moons         Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
