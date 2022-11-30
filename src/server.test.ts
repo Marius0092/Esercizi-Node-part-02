@@ -8,7 +8,6 @@ const request = supertest(app);
 
 describe("GET /planets", () => {
     test("Valid request", async () => {
-
         const planets = [
             {
                 id: 1,
@@ -16,8 +15,8 @@ describe("GET /planets", () => {
                 description: null,
                 diameter: 1234,
                 moons: 12,
-                createdAt: "2022-11-29T01:01:52.234Z",
-                updatedAt: "2022-11-29T01:01:23.133Z"
+                createdAt: "2022-05-15T11:36:11.162Z",
+                updatedAt: "2022-05-15T11:35:57.603Z",
             },
             {
                 id: 2,
@@ -25,10 +24,11 @@ describe("GET /planets", () => {
                 description: null,
                 diameter: 5678,
                 moons: 2,
-                createdAt: "2022-11-29T01:02:27.770Z",
-                updatedAt: "2022-11-29T01:02:07.035Z"
-            }
-        ]
+                createdAt: "2022-05-15T11:36:41.513Z",
+                updatedAt: "2022-05-15T11:36:30.143Z",
+            },
+        ];
+
         // @ts-ignore
         prismaMock.planet.findMany.mockResolvedValue(planets);
 
@@ -43,16 +43,26 @@ describe("GET /planets", () => {
 
 describe("POST /planets", () => {
     test("Valid request", async () => {
-
         const planet = {
+            id: 3,
             name: "Mercury",
+            description: null,
             diameter: 1234,
             moons: 12,
+            createdAt: "2022-11-30T23:30:15.372Z",
+            updatedAt: "2022-11-30T23:30:15.372Z",
         };
+
+        // @ts-ignore
+        prismaMock.planet.create.mockResolvedValue(planet);
 
         const response = await request
             .post("/planets")
-            .send(planet)
+            .send({
+                name: "Mercury",
+                diameter: 1234,
+                moons: 12,
+            })
             .expect(201)
             .expect("Content-Type", /application\/json/);
 
@@ -60,7 +70,6 @@ describe("POST /planets", () => {
     });
 
     test("Invalid request", async () => {
-
         const planet = {
             diameter: 1234,
             moons: 12,
@@ -74,9 +83,8 @@ describe("POST /planets", () => {
 
         expect(response.body).toEqual({
             errors: {
-                body: expect.any(Array)
-            }
+                body: expect.any(Array),
+            },
         });
     });
 });
-
