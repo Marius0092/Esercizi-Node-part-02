@@ -31,6 +31,21 @@ app.post("/planets", (0, validation_1.validate)({ body: validation_1.planetSchem
     });
     response.status(201).json(planet);
 });
+app.put("/planets/:id(\\d+)", (0, validation_1.validate)({ body: validation_1.planetSchema }), async (request, response, next) => {
+    const planetId = Number(request.params.id);
+    const planetData = request.body;
+    try {
+        const planet = await client_1.default.planet.update({
+            where: { id: planetId },
+            data: planetData
+        });
+        response.status(200).json(planet);
+    }
+    catch (error) {
+        response.status(404);
+        next(`Cannot PUT /planets/${planetId}`);
+    }
+});
 app.use(validation_1.validationErrorMiddleware);
 exports.default = app;
 //# sourceMappingURL=app.js.map
