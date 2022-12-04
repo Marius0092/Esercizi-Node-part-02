@@ -45,14 +45,14 @@ describe("GET /planets", () => {
 describe("GET /planet/:id", () => {
     test("Valid request", async () => {
         const planet = {
-                id: 1,
-                name: "Mercury",
-                description: null,
-                diameter: 1234,
-                moons: 12,
-                createdAt: "2022-05-15T11:36:11.162Z",
-                updatedAt: "2022-05-15T11:35:57.603Z",
-            };
+            id: 1,
+            name: "Mercury",
+            description: null,
+            diameter: 1234,
+            moons: 12,
+            createdAt: "2022-05-15T11:36:11.162Z",
+            updatedAt: "2022-05-15T11:35:57.603Z",
+        };
 
         // @ts-ignore
         prismaMock.planet.findUnique.mockResolvedValue(planet);
@@ -95,8 +95,8 @@ describe("POST /planets", () => {
             description: null,
             diameter: 1234,
             moons: 12,
-            createdAt: "2022-11-30T23:30:15.372Z",
-            updatedAt: "2022-11-30T23:30:15.372Z",
+            createdAt: "2022-05-15T14:51:23.372Z",
+            updatedAt: "2022-05-15T14:51:23.372Z",
         };
 
         // @ts-ignore
@@ -144,8 +144,8 @@ describe("PUT /planets/:id", () => {
             description: "Lovely planet",
             diameter: 1234,
             moons: 12,
-            createdAt: "2022-11-30T23:30:15.372Z",
-            updatedAt: "2022-11-30T23:30:15.372Z",
+            createdAt: "2022-05-15T14:51:23.372Z",
+            updatedAt: "2022-05-15T14:51:23.372Z",
         };
 
         // @ts-ignore
@@ -262,6 +262,24 @@ describe("POST /planets/:id/photo", () => {
             .attach("photo", "test-fixtures/photos/file.png")
             .expect(201)
             .expect("Access-Control-Allow-Origin", "http://localhost:8080");
+    });
+
+    test("Valid request with JPG file upload", async () => {
+        await request
+            .post("/planets/23/photo")
+            .attach("photo", "test-fixtures/photos/file.jpg")
+            .expect(201)
+            .expect("Access-Control-Allow-Origin", "http://localhost:8080");
+    });
+
+    test("Invalid request with text file upload", async () => {
+        const response = await request
+            .post("/planets/23/photo")
+            .attach("photo", "test-fixtures/photos/file.txt")
+            .expect(500)
+            .expect("Content-Type", /text\/html/);
+
+        expect(response.text).toContain("Error: The uploaded file must be a JPG or a PNG image.");
     });
 
     test("Planet does not exist", async () => {
