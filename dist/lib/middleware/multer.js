@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.initMulterMiddleware = exports.multerOptions = exports.generatePhotoFilename = void 0;
 const multer_1 = __importDefault(require("multer"));
 const mime_1 = __importDefault(require("mime"));
-const crypto_1 = require("crypto");
+const node_crypto_1 = require("node:crypto");
 const generatePhotoFilename = (mimeType) => {
-    const randomFilename = `${(0, crypto_1.randomUUID)()}-${Date.now()}`;
+    const randomFilename = `${(0, node_crypto_1.randomUUID)()}-${Date.now()}`;
     const fileExtension = mime_1.default.getExtension(mimeType);
     const filename = `${randomFilename}.${fileExtension}`;
     return filename;
@@ -20,7 +20,22 @@ const storage = multer_1.default.diskStorage({
         return callback(null, (0, exports.generatePhotoFilename)(file.mimetype));
     }
 });
-exports.multerOptions = {};
+const MAX_SIZE_IN_MEGABYTES = 6 * 1024 * 1024;
+const VALID_MIME_TYPES = ["image/png", "image/jpeg"];
+const fileFilter = (request, file, callback) => {
+    if (VALID_MIME_TYPES.includes(file.mimetype)) {
+        callback(null, true);
+    }
+    else {
+        callback(new Error("Error: The uploaded file must be a JPG or a PNG image."));
+    }
+};
+exports.multerOptions = {
+    fileFilter,
+    limits: {
+        fileSize: MAX_SIZE_IN_MEGABYTES
+    }
+};
 const initMulterMiddleware = () => {
     return (0, multer_1.default)({ storage, ...exports.multerOptions });
 };

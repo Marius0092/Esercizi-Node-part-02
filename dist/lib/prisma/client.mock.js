@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.prismaMock = void 0;
 const jest_mock_extended_1 = require("jest-mock-extended");
 const client_1 = __importDefault(require("./client"));
-jest.mock('./client', () => ({
+jest.mock("./client", () => ({
     __esModule: true,
     default: (0, jest_mock_extended_1.mockDeep)(),
 }));
