@@ -50,18 +50,27 @@ router.get("/:id(\\d+)", async (request, response, next) => {
 });
 router.post("/", passport_1.checkAuthorization, (0, validation_1.validate)({ body: validation_1.planetSchema }), async (request, response) => {
     const planetData = request.body;
+    const username = request.user?.username;
     const planet = await client_1.default.planet.create({
-        data: planetData
+        data: {
+            ...planetData,
+            createdBy: username,
+            updatedBy: username,
+        }
     });
     response.status(201).json(planet);
 });
 router.put("/:id(\\d+)", passport_1.checkAuthorization, (0, validation_1.validate)({ body: validation_1.planetSchema }), async (request, response, next) => {
     const planetId = Number(request.params.id);
     const planetData = request.body;
+    const username = request.user?.username;
     try {
         const planet = await client_1.default.planet.update({
             where: { id: planetId },
-            data: planetData
+            data: {
+                ...planetData,
+                updatedBy: username,
+            }
         });
         response.status(200).json(planet);
     }
